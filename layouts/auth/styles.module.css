@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    align-items: center;
+    gap: 128px;
+}
+
+.left {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.left div {
+    width: 429px;
+}
+
+.right {
+    height: 100vh;
+    max-width: 849px;
+    width: 60%;
+    position: relative;
+    padding: 12px;
+}
