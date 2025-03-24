@@ -162,7 +162,8 @@
     cursor: pointer;
 }
 
-.buttons h2:last-child {
+.buttons h2:last-child,
+.form button {
     text-align: center;
     border-radius: 16px;
     background-color: #545AE8;

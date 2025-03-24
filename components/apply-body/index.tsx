@@ -21,6 +21,25 @@ type FormDetails = {
   date: string;
   degree: string;
   picture: string;
+  fatherFullName: string;
+  fatherTown: string;
+  fatherOccupation: string;
+  fatherAddress: string;
+  fatherIncome: string;
+  fatherAlive: string;
+  long: string;
+  nature: string;
+  otherInfo: string;
+  hodName: string;
+  rank: string;
+  refereeName1: string;
+  refereeAddress1: string;
+  refereeOccupation1: string;
+  refereeRecomendation1: string;
+  refereeName2: string;
+  refereeAddress2: string;
+  refereeOccupation2: string;
+  refereeRecomendation2: string;
 };
 
 export const ApplyBody = () => {
@@ -70,7 +89,7 @@ export const ApplyBody = () => {
                     {errors.fname && <span className="error">{errors.fname.message}</span>}
                   </div>
                   <div className={styles.group}>
-                    <label htmlFor="fname">Last Name</label>
+                    <label htmlFor="lname">Last Name</label>
                     <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
                     {errors.lname && <span className="error">{errors.lname.message}</span>}
                   </div>
@@ -161,46 +180,46 @@ export const ApplyBody = () => {
             ) : active === 2 ? (
               <>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Father&apos;s Full Name</label>
-                  <input type="text" placeholder="Enter your First Name" {...register("fname", { required: "First Name is required" })} />
-                  {errors.fname && <span className="error">{errors.fname.message}</span>}
+                  <label htmlFor="fatherFullName">Father&apos;s Full Name</label>
+                  <input type="text" placeholder="Enter your Father's Full Name" {...register("fatherFullName", { required: "Father's Full Name is required" })} />
+                  {errors.fatherFullName && <span className="error">{errors.fatherFullName.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Town of Origin</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="fatherTown">Town of Origin</label>
+                  <input type="text" placeholder="Enter your Father's Town" {...register("fatherTown", { required: "Father's Town is required" })} />
+                  {errors.fatherTown && <span className="error">{errors.fatherTown.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Occupation</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="fatherOccupation">Occupation</label>
+                  <input type="text" placeholder="Enter your Father's Occupation" {...register("fatherOccupation", { required: "Father's Occupation is required" })} />
+                  {errors.fatherOccupation && <span className="error">{errors.fatherOccupation.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Residential Address of Parents</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="fatherAddress">Residential Address of Parents</label>
+                  <input type="text" placeholder="Enter Address" {...register("fatherAddress", { required: "Address is required" })} />
+                  {errors.fatherAddress && <span className="error">{errors.fatherAddress.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Estimated Annual Income of Parents</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="fatherIncome">Estimated Annual Income of Parents</label>
+                  <input type="text" placeholder="Enter  Annual Income" {...register("fatherIncome", { required: "Annual Income is required" })} />
+                  {errors.fatherIncome && <span className="error">{errors.fatherIncome.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">State whether livng or dead</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="fatherAlive">State whether livng or dead</label>
+                  <input type="text" placeholder="Enter  Field" {...register("fatherAlive", { required: "Field is required" })} />
+                  {errors.fatherAlive && <span className="error">{errors.fatherAlive.message}</span>}
                 </div>
               </>
             ) : active === 3 ? (
               <>
                 <div className={styles.group}>
-                  <label htmlFor="fname">How long has the applicant been in your department</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="long">How long has the applicant been in your department</label>
+                  <input type="text" placeholder="Enter field" {...register("long", { required: "Field is required" })} />
+                  {errors.long && <span className="error">{errors.long.message}</span>}
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="">Nature of Academic Programme</label>
-                  <select name="" id="">
+                  <select {...register("nature", { required: "Field is required" })}>
                     <option value="">Choose Option</option>
                     <option value="Remedial">Remedial</option>
                     <option value="Part-Time">Part-Time</option>
@@ -208,69 +227,81 @@ export const ApplyBody = () => {
                   </select>
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Any Other Info</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="otherInfo">Any Other Info</label>
+                  <input type="text" placeholder="Enter any other info" {...register("otherInfo", { required: "Field is required" })} />
+                  {errors.otherInfo && <span className="error">{errors.otherInfo.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Name of the Dean/Hod</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="hodName">Name of the Dean/Hod</label>
+                  <input type="text" placeholder="Enter Name of Dean/HOD" {...register("hodName", { required: "Name of HOD/Dean  is required" })} />
+                  {errors.hodName && <span className="error">{errors.hodName.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Rank</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="rank">Rank</label>
+                  <input type="text" placeholder="Enter Rank" {...register("rank", { required: "Rank  is required" })} />
+                  {errors.rank && <span className="error">{errors.rank.message}</span>}
                 </div>
               </>
             ) : (
               <>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Referee One Name</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="refereeName1">Referee One Name</label>
+                  <input type="text" placeholder="Enter your Referee One Name" {...register("refereeName1", { required: "Name of Referee one is required" })} />
+                  {errors.refereeName1 && <span className="error">{errors.refereeName1.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Referee One Address</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="refereeAddress1">Referee One Address</label>
+                  <input type="text" placeholder="Enter your Refereee's Address" {...register("refereeAddress1", { required: "Referee Address is required" })} />
+                  {errors.refereeAddress1 && <span className="error">{errors.refereeAddress1.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Referee One Occupation</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="refereeOccupation1">Referee One Occupation</label>
+                  <input type="text" placeholder="Enter your Referee's Occupation" {...register("refereeOccupation1", { required: "Referee Occupation is required" })} />
+                  {errors.refereeOccupation1 && <span className="error">{errors.refereeOccupation1.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Referee One Recommendation</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="refereeRecomendation1">Referee One Recommendation</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your Referee's Recommendation"
+                    {...register("refereeRecomendation1", { required: "Referee's Recommendation is required" })}
+                  />
+                  {errors.refereeRecomendation1 && <span className="error">{errors.refereeRecomendation1.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Referee Two Name</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="refereeName2">Referee Two Name</label>
+                  <input type="text" placeholder="Enter your Referee Two Name" {...register("refereeName2", { required: "Name of Referee Two is required" })} />
+                  {errors.refereeName2 && <span className="error">{errors.refereeName2.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Referee Two Address</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="refereeAddress2">Referee Two Address</label>
+                  <input type="text" placeholder="Enter your Refereee's Address" {...register("refereeAddress2", { required: "Referee Address is required" })} />
+                  {errors.refereeAddress2 && <span className="error">{errors.refereeAddress2.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Referee Two Occupation</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="refereeOccupation2">Referee Two Occupation</label>
+                  <input type="text" placeholder="Enter your Referee's Occupation" {...register("refereeOccupation2", { required: "Referee Occupation is required" })} />
+                  {errors.refereeOccupation2 && <span className="error">{errors.refereeOccupation2.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fname">Referee Two Recommendation</label>
-                  <input type="text" placeholder="Enter your Last Name" {...register("lname", { required: "Last Name is required" })} />
-                  {errors.lname && <span className="error">{errors.lname.message}</span>}
+                  <label htmlFor="refereeRecomendation2">Referee Two Recommendation</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your Referee's Recommendation"
+                    {...register("refereeRecomendation2", { required: "Referee's Recommendation is required" })}
+                  />
+                  {errors.refereeRecomendation2 && <span className="error">{errors.refereeRecomendation2.message}</span>}
                 </div>
               </>
             )}
-            <div className={styles.buttons}>
-              {active !== 1 && <h2 onClick={() => setActive(active - 1)}>Previous</h2>}
-              <h2 onClick={() => setActive(active + 1)}>Next</h2>
-            </div>
+            {active === 4 ? (
+              <button>Submit</button>
+            ) : (
+              <div className={styles.buttons}>
+                {active !== 1 && <h2 onClick={() => setActive(active - 1)}>Previous</h2>}
+                <h2 onClick={() => setActive(active + 1)}>Next</h2>
+              </div>
+            )}
           </div>
         </div>
       </div>
