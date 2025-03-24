@@ -42,3 +42,14 @@
     width: 177px;
     text-align: center;
 }
+
+@media screen and (max-width: 500px) {
+    .container h2 {
+        font-size: 48px;
+        width: 100%;
+    }
+
+    .container p {
+        width: 100%;
+    }
+}

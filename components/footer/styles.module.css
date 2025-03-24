@@ -9,3 +9,9 @@
     line-height: 26px;
     color: white;
 }
+
+@media screen and (max-width: 500px) {
+    .container {
+        padding: 20px 50px;
+    }
+}

@@ -10,6 +10,7 @@ export const Header = () => {
       </div>
       <nav>
         <Link href="/">Home</Link>
+        <Link href="/about">About</Link>
         <Link href="/how">How it works</Link>
         <button>
           <Link href="/apply">Apply Now</Link>
