@@ -1,0 +1,19 @@
+.container {
+    width: 100%;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    height: 440px;
+    flex-direction: column;
+    gap: 141px;
+    background-image: url("../../public/images/gradient.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.container h2 {
+    font-size: 48px;
+    line-height: 64px;
+    font-weight: 700;
+    color: #221E1E;
+}
