@@ -8,7 +8,7 @@
     padding: 100px 0px;
 }
 
-.first {
+.row {
     display: flex;
     align-items: center;
     gap: 62px;
@@ -25,9 +25,11 @@
     font-weight: 700;
     color: black;
     line-height: 48px;
+    text-transform: uppercase;
 }
 
-.content p {
+.content p,
+.content li {
     font-size: 16px;
     font-weight: 400;
     letter-spacing: 0.8px;
@@ -35,10 +37,11 @@
     line-height: 32px;
 }
 
-.second {
+.row:nth-child(even) {
     display: flex;
     align-items: center;
     gap: 62px;
+    flex-direction: row-reverse;
 }
 
 @media screen and (max-width: 500px) {
@@ -48,16 +51,12 @@
         gap: 64px;
     }
 
-    .first {
+    .row,
+    .row:nth-child(even) {
         flex-direction: column;
     }
 
-    .second {
-        flex-direction: column-reverse;
-    }
-
-    .first img,
-    .second img {
+    .row img {
         width: 100%;
         object-fit: cover;
     }

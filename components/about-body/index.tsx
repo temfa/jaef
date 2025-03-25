@@ -8,7 +8,7 @@ export const AboutBody = () => {
       <div className={styles.first}>
         <Image src="/images/about-1.png" width={745} height={558} alt="First" />
         <div className={styles.content}>
-          <h2>About Joseph Adaramola Education Foundation</h2>
+          <h2> Joseph Adaramola Education Foundation</h2>
           <p>
             The Joseph Adaramola Education Foundation (JAEF) was inaugurated by Mr. Akin Adaramola on the occasion of Ibaram-Akoko Education Summit, 2015 in memory of his late
             father&apos;s (Pa Joseph Adaramola) love and commitment to the education of his children during his life time .
