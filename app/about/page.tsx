@@ -6,7 +6,7 @@ import React from "react";
 const About = () => {
   return (
     <>
-      <AboutBanner />
+      <AboutBanner text="About J.A.E.Fs" />
       <AboutBody />
       <Footer />
     </>
