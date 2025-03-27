@@ -18,6 +18,14 @@ export const LoginBody = ({ page }: { page: string }) => {
           <p>Please login to continue to your account.</p>
         </div>
       )}
+      {page === "Sign up" && (
+        <div className={styles.group}>
+          <label htmlFor="matricNo">Matric Number</label>
+          <div>
+            <input type="text" placeholder="Enter your Matric Number" name="matricNo" />
+          </div>
+        </div>
+      )}
       <div className={styles.form}>
         <div className={styles.group}>
           <label htmlFor="email">Email</label>
