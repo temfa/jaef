@@ -1,8 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from "./styles.module.css";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { formLabels } from "@/utils/data";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 type FormDetails = {
   fname: string;
@@ -43,6 +45,7 @@ type FormDetails = {
 };
 
 export const ApplyBody = () => {
+  const formRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(1);
   const {
     register,
@@ -53,6 +56,21 @@ export const ApplyBody = () => {
   const submit: SubmitHandler<FormDetails> = (e) => {
     setActive(active + 1);
     console.log(e);
+  };
+
+  const downloadPDF = async () => {
+    console.log(formRef.current);
+    if (!formRef.current) return;
+
+    const canvas = await html2canvas(formRef.current);
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgWidth = 190; // Adjust width
+    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+
+    pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+    pdf.save("form.pdf"); // Download file
   };
 
   return (
@@ -74,10 +92,10 @@ export const ApplyBody = () => {
         <div className={styles.right}>
           <div className={styles.form}>
             <div className={styles.indicatorBody}>
-              <div className={styles.indicator} style={{ width: `${(active / 4) * 100}%` }} />
+              <div className={styles.indicator} style={{ width: `${(active / 5) * 100}%` }} />
             </div>
             <div className={styles.formHeader}>
-              <p>Step {active}/4</p>
+              <p>Step {active}/5</p>
               <h2>{formLabels[active - 1]}</h2>
             </div>
             {active === 1 ? (
@@ -212,37 +230,42 @@ export const ApplyBody = () => {
               </>
             ) : active === 3 ? (
               <>
-                <div className={styles.group}>
-                  <label htmlFor="long">How long has the applicant been in your department</label>
-                  <input type="text" placeholder="Enter field" {...register("long", { required: "Field is required" })} />
-                  {errors.long && <span className="error">{errors.long.message}</span>}
+                <div className={styles.department} ref={formRef}>
+                  <div className={styles.group}>
+                    <label htmlFor="long">How long has the applicant been in your department</label>
+                    <input type="text" placeholder="Enter field" {...register("long", { required: "Field is required" })} />
+                    {errors.long && <span className="error">{errors.long.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="">Nature of Academic Programme</label>
+                    <select {...register("nature", { required: "Field is required" })}>
+                      <option value="">Choose Option</option>
+                      <option value="Remedial">Remedial</option>
+                      <option value="Part-Time">Part-Time</option>
+                      <option value="Full-Time">Full-Time</option>
+                    </select>
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="otherInfo">Any Other Info</label>
+                    <input type="text" placeholder="Enter any other info" {...register("otherInfo", { required: "Field is required" })} />
+                    {errors.otherInfo && <span className="error">{errors.otherInfo.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="hodName">Name of the Dean/Hod</label>
+                    <input type="text" placeholder="Enter Name of Dean/HOD" {...register("hodName", { required: "Name of HOD/Dean  is required" })} />
+                    {errors.hodName && <span className="error">{errors.hodName.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="rank">Rank</label>
+                    <input type="text" placeholder="Enter Rank" {...register("rank", { required: "Rank  is required" })} />
+                    {errors.rank && <span className="error">{errors.rank.message}</span>}
+                  </div>
                 </div>
-                <div className={styles.group}>
-                  <label htmlFor="">Nature of Academic Programme</label>
-                  <select {...register("nature", { required: "Field is required" })}>
-                    <option value="">Choose Option</option>
-                    <option value="Remedial">Remedial</option>
-                    <option value="Part-Time">Part-Time</option>
-                    <option value="Full-Time">Full-Time</option>
-                  </select>
-                </div>
-                <div className={styles.group}>
-                  <label htmlFor="otherInfo">Any Other Info</label>
-                  <input type="text" placeholder="Enter any other info" {...register("otherInfo", { required: "Field is required" })} />
-                  {errors.otherInfo && <span className="error">{errors.otherInfo.message}</span>}
-                </div>
-                <div className={styles.group}>
-                  <label htmlFor="hodName">Name of the Dean/Hod</label>
-                  <input type="text" placeholder="Enter Name of Dean/HOD" {...register("hodName", { required: "Name of HOD/Dean  is required" })} />
-                  {errors.hodName && <span className="error">{errors.hodName.message}</span>}
-                </div>
-                <div className={styles.group}>
-                  <label htmlFor="rank">Rank</label>
-                  <input type="text" placeholder="Enter Rank" {...register("rank", { required: "Rank  is required" })} />
-                  {errors.rank && <span className="error">{errors.rank.message}</span>}
-                </div>
+                <p>
+                  Click to download file: <span onClick={() => downloadPDF()}>Download</span>
+                </p>
               </>
-            ) : (
+            ) : active === 4 ? (
               <>
                 <div className={styles.group}>
                   <label htmlFor="refereeName1">Referee One Name</label>
@@ -293,8 +316,16 @@ export const ApplyBody = () => {
                   {errors.refereeRecomendation2 && <span className="error">{errors.refereeRecomendation2.message}</span>}
                 </div>
               </>
+            ) : (
+              <>
+                <div className={styles.group}>
+                  <label htmlFor="address">Document</label>
+                  <input type="file" placeholder="Enter your Picture" {...register("picture", { required: "Picture is required" })} />
+                  {errors.picture && <span className="error">{errors.picture.message}</span>}
+                </div>
+              </>
             )}
-            {active === 4 ? (
+            {active === 5 ? (
               <button>Submit</button>
             ) : (
               <div className={styles.buttons}>

@@ -71,7 +71,8 @@
     flex: 1;
 }
 
-.form {
+.form,
+.department {
     display: flex;
     flex-direction: column;
     gap: 28px;
@@ -174,6 +175,20 @@
     font-weight: 300;
     width: 150px;
     cursor: pointer;
+}
+
+.form>p span {
+    border-radius: 16px;
+    background-color: #545AE8;
+    padding: 6px 16px;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: 300;
+    margin-top: 70px;
+    width: 177px;
+    margin: 0px auto;
+    text-align: center;
 }
 
 @media screen and (max-width: 500px) {

@@ -1,13 +1,23 @@
+"use client";
 import React from "react";
 import styles from "./styles.module.css";
+import { useRouter } from "next/navigation";
 
-export const LoginBody = () => {
+export const LoginBody = ({ page }: { page: string }) => {
+  const router = useRouter();
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h2>Sign In</h2>
-        <p>Please login to continue to your account.</p>
-      </div>
+      {page === "Sign up" ? (
+        <div className={styles.header}>
+          <h2>Sign Up</h2>
+          <p>Please fill to create an account</p>
+        </div>
+      ) : (
+        <div className={styles.header}>
+          <h2>Sign In</h2>
+          <p>Please login to continue to your account.</p>
+        </div>
+      )}
       <div className={styles.form}>
         <div className={styles.group}>
           <label htmlFor="email">Email</label>
@@ -21,7 +31,7 @@ export const LoginBody = () => {
             <input type="password" placeholder="Enter your Password" name="password" />
           </div>
         </div>
-        <button>Sign In</button>
+        <button onClick={() => router.push("/apply")}>{page}</button>
       </div>
     </div>
   );

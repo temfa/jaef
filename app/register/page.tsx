@@ -2,12 +2,12 @@ import { LoginBody } from "@/components/login-body";
 import { AuthLayout } from "@/layouts/auth";
 import React from "react";
 
-const Login = () => {
+const Register = () => {
   return (
     <AuthLayout>
-      <LoginBody page="Sign in" />
+      <LoginBody page="Sign up" />
     </AuthLayout>
   );
 };
 
-export default Login;
+export default Register;

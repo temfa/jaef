@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./styles.module.css";
 import Image from "next/image";
+import Link from "next/link";
 
 export const Guidelines = () => {
   return (
@@ -51,6 +52,7 @@ export const Guidelines = () => {
           </p>
         </div>
       </div>
+      <Link href="/register">Apply Now</Link>
     </div>
   );
 };

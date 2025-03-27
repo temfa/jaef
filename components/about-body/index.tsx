@@ -15,7 +15,7 @@ export const AboutBody = () => {
           </p>
           <p>
             While inagurating the foundation, Mr. Adaramola donated the sum of N500,000.00 to the foundation as seed fund and also appointed a 4-member board of Trustees,
-            comprising Mr. E. O. Olumoko as Chairman , Surv. Adaramola Francis , Mr Ajiga Olajide as members and Mrs. Akande Iyadunni as Secretary.
+            comprising Mr. E. O. Olumoko as Chairman , Surv. Adaramola Francis , Dr. Ajiga Olajide as members and Mrs. Akande Iyadunni as Secretary.
           </p>
         </div>
       </div>
