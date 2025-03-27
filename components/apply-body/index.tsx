@@ -223,7 +223,7 @@ export const ApplyBody = () => {
                   {errors.fatherIncome && <span className="error">{errors.fatherIncome.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fatherAlive">State whether livng or dead</label>
+                  <label htmlFor="fatherAlive">State whether living or dead</label>
                   <input type="text" placeholder="Enter  Field" {...register("fatherAlive", { required: "Field is required" })} />
                   {errors.fatherAlive && <span className="error">{errors.fatherAlive.message}</span>}
                 </div>
