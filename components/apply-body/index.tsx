@@ -1,10 +1,15 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.css";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { formLabels } from "@/utils/data";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { auth, db, storage } from "@/utils/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 type FormDetails = {
   fname: string;
@@ -22,7 +27,6 @@ type FormDetails = {
   duration: string;
   date: string;
   degree: string;
-  picture: string;
   fatherFullName: string;
   fatherTown: string;
   fatherOccupation: string;
@@ -47,15 +51,89 @@ type FormDetails = {
 export const ApplyBody = () => {
   const formRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(1);
+  const [userId, setUserId] = useState("");
+  const [picture, setPicture] = useState("");
+  const [document, setDocument] = useState("");
+  const [status, setStatus] = useState("");
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors },
   } = useForm<FormDetails>();
+  const formValues = useWatch({ control });
+  const router = useRouter();
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserId(user.uid); // User is logged in, set userId
+        const fetchData = async () => {
+          const savedData = await loadFormProgress(user.uid);
+          if (savedData) {
+            Object.entries(savedData).forEach(([key, value]) => setValue(key as keyof FormDetails, value));
+            if (savedData.status) setStatus(savedData.status);
+          }
+        };
+        fetchData();
+      } else {
+        toast.error("You have to be logged in to apply");
+        setTimeout(() => {
+          router.push("/login");
+        }, 3000);
+      }
+    });
 
-  const submit: SubmitHandler<FormDetails> = (e) => {
-    setActive(active + 1);
-    console.log(e);
+    return () => unsubscribe();
+  }, [router, setValue]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const saveFormProgress = async (userId: string, data: any) => {
+    try {
+      const docRef = doc(db, "application", userId);
+      await setDoc(docRef, data, { merge: true });
+      console.log("Progress saved!");
+    } catch (error) {
+      console.error("Error saving progress:", error);
+    }
+  };
+
+  const loadFormProgress = async (userId: string) => {
+    try {
+      const docRef = doc(db, "application", userId);
+      const snapshot = await getDoc(docRef);
+      return snapshot.exists() ? snapshot.data() : null;
+    } catch (error) {
+      console.error("Error loading progress:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (userId && Object.keys(formValues).length > 0) {
+      const timeout = setTimeout(() => {
+        saveFormProgress(userId, formValues);
+      }, 1000); // Save after 1s delay
+
+      // Cleanup function to clear the timeout if formValues change again
+      return () => clearTimeout(timeout);
+    }
+  }, [formValues, userId]);
+
+  const submit: SubmitHandler<FormDetails> = async (e) => {
+    if (picture === "") toast.error("You need to upload a picture");
+    else if (document === "") toast.error("You need to upload the HOD/ Dean File");
+    else {
+      try {
+        const newObj = { ...e, picture, document, status: "Applied", userId };
+        await saveFormProgress(userId, newObj);
+
+        toast.success("Application successfully! Kindly check back later");
+      } catch (error) {
+        console.log(error);
+        toast.error("Error saving form. Please try again.");
+      }
+    }
   };
 
   const downloadPDF = async () => {
@@ -71,6 +149,40 @@ export const ApplyBody = () => {
 
     pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
     pdf.save("form.pdf"); // Download file
+  };
+  const uploadImage = async (imageFile: File) => {
+    const storageRef = ref(storage, "images/" + imageFile.name); // Path in Firebase Storage
+
+    try {
+      // Upload the image
+      await uploadBytes(storageRef, imageFile);
+      console.log("File uploaded successfully!");
+
+      // Get the download URL of the uploaded file
+      const downloadURL = await getDownloadURL(storageRef);
+      console.log("Download URL:", downloadURL);
+
+      return downloadURL; // This is the URL you can use to access the image
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  const handleFileChange1 = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const url = await uploadImage(file);
+      if (url) setPicture(url);
+    }
+  };
+  const handleFileChange2 = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const url = await uploadImage(file);
+      if (url) setDocument(url);
+    }
   };
 
   return (
@@ -88,6 +200,11 @@ export const ApplyBody = () => {
               </h3>
             );
           })}
+          {status ? (
+            <h3 onClick={() => setActive(6)} className={active === 6 ? styles.active : ""}>
+              Status
+            </h3>
+          ) : null}
         </div>
         <div className={styles.right}>
           <div className={styles.form}>
@@ -95,7 +212,7 @@ export const ApplyBody = () => {
               <div className={styles.indicator} style={{ width: `${(active / 5) * 100}%` }} />
             </div>
             <div className={styles.formHeader}>
-              <p>Step {active}/5</p>
+              {active !== 6 && <p>Step {active}/5</p>}
               <h2>{formLabels[active - 1]}</h2>
             </div>
             {active === 1 ? (
@@ -191,8 +308,8 @@ export const ApplyBody = () => {
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="address">Picture</label>
-                  <input type="file" placeholder="Enter your Picture" {...register("picture", { required: "Picture is required" })} />
-                  {errors.picture && <span className="error">{errors.picture.message}</span>}
+                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange1} />
+                  {/* {errors.picture && <span className="error">{errors.picture.message}</span>} */}
                 </div>
               </>
             ) : active === 2 ? (
@@ -316,21 +433,24 @@ export const ApplyBody = () => {
                   {errors.refereeRecomendation2 && <span className="error">{errors.refereeRecomendation2.message}</span>}
                 </div>
               </>
-            ) : (
+            ) : active === 5 ? (
               <>
                 <div className={styles.group}>
                   <label htmlFor="address">Document</label>
-                  <input type="file" placeholder="Enter your Picture" {...register("picture", { required: "Picture is required" })} />
-                  {errors.picture && <span className="error">{errors.picture.message}</span>}
+                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange2} />
                 </div>
+              </>
+            ) : (
+              <>
+                <h4>The Status of your application is {status}</h4>
               </>
             )}
             {active === 5 ? (
               <button>Submit</button>
-            ) : (
+            ) : active === 6 ? null : (
               <div className={styles.buttons}>
                 {active !== 1 && <h2 onClick={() => setActive(active - 1)}>Previous</h2>}
-                <h2 onClick={() => setActive(active + 1)}>Next</h2>
+                <h2 onClick={() => setActive(active + 1)}>Save & Continue</h2>
               </div>
             )}
           </div>

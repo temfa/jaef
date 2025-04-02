@@ -1,0 +1,156 @@
+.assignContainer {
+    width: 100%;
+    background: #FBFEFC;
+    border-radius: 6px;
+    padding: 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.assignWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.assignHeader {
+    width: 100%;
+    display: flex;
+    background: #878bef;
+    border-bottom: 1px solid #009999;
+    padding: 16px 0px;
+}
+
+
+.assignHeader>p {
+    width: 23.75%;
+    padding-left: 20px;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17px;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+    color: white
+}
+
+/* .assignHeader>p :last-child {
+    width: 18%;
+} */
+
+.assignHeader>p:first-child {
+    width: 5%;
+}
+
+.assignSingle {
+    display: flex;
+    width: 100%;
+    padding: 24px 0px;
+    align-items: center;
+    cursor: pointer;
+}
+
+
+
+.assignSingle>p {
+    width: 23.75%;
+    padding-left: 16px;
+    box-sizing: border-box;
+}
+
+.assignSingle>p:first-child {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+    letter-spacing: 0px;
+    width: 5%;
+}
+
+.assignSingle>p:last-child {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0px;
+}
+
+.assignSingle>p:nth-child(2) {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-transform: capitalize;
+}
+
+
+.ongoing {
+    color: rgba(254, 162, 55, 1);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-transform: capitalize;
+}
+
+.completed {
+    color: rgba(46, 198, 107, 1);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-transform: capitalize;
+}
+
+.failed {
+    color: red;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-transform: capitalize;
+}
+
+.user {
+    width: 18%;
+    display: flex;
+    gap: 16px;
+}
+
+.user div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.user div h2 {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 17px;
+    letter-spacing: 0em;
+    color: #252525;
+}
+
+.user div h3 {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0.002em;
+    color: #3D3D3D;
+}
+
+@media screen and (max-width: 500px) {
+    .assignContainer {
+
+        overflow-x: scroll;
+    }
+
+    .assignWrapper {
+        width: 800px;
+    }
+
+    .assignContainer::-webkit-scrollbar {
+        display: none;
+    }
+}

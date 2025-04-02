@@ -103,14 +103,14 @@ export const LoginBody = ({ page }: { page: string }) => {
           <label htmlFor="email">Email</label>
           <div>
             <input type="email" placeholder="Enter your Email" {...register("email", { required: "Email is Required" })} />
-            {errors.matricNo && <span className="error">{errors.matricNo.message}</span>}
+            {errors.email && <span className="error">{errors.email.message}</span>}
           </div>
         </div>
         <div className={styles.group}>
           <label htmlFor="password">Password</label>
           <div>
             <input type="password" placeholder="Enter your Password" {...register("password", { required: "Password is Required" })} />
-            {errors.matricNo && <span className="error">{errors.matricNo.message}</span>}
+            {errors.password && <span className="error">{errors.password.message}</span>}
           </div>
         </div>
         {loading ? <Loader /> : <button type="submit">{page}</button>}
