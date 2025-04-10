@@ -10,6 +10,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import Image from "next/image";
 
 type FormDetails = {
   fname: string;
@@ -188,6 +189,7 @@ export const ApplyBody = () => {
   return (
     <form className={styles.container} onSubmit={handleSubmit(submit)}>
       <div className={styles.header}>
+        <Image src="/images/graduateLogo.png" width={60} height={60} alt="Logo" />
         <p>Application Form for Education Support Scheme</p>
         <h2>Joseph Adaramola Education Foundation(JAEF)</h2>
       </div>
@@ -201,7 +203,7 @@ export const ApplyBody = () => {
             );
           })}
           {status ? (
-            <h3 onClick={() => setActive(6)} className={active === 6 ? styles.active : ""}>
+            <h3 onClick={() => setActive(8)} className={active === 8 ? styles.active : ""}>
               Status
             </h3>
           ) : null}
@@ -209,13 +211,41 @@ export const ApplyBody = () => {
         <div className={styles.right}>
           <div className={styles.form}>
             <div className={styles.indicatorBody}>
-              <div className={styles.indicator} style={{ width: `${(active / 5) * 100}%` }} />
+              <div className={styles.indicator} style={{ width: `${(active / 7) * 100}%` }} />
             </div>
             <div className={styles.formHeader}>
-              {active !== 6 && <p>Step {active}/5</p>}
+              {active !== 8 && <p>Step {active}/7</p>}
               <h2>{formLabels[active - 1]}</h2>
             </div>
             {active === 1 ? (
+              <>
+                <Image src="/images/ad.jpg" width={750} height={900} alt="Ad" />
+              </>
+            ) : active === 2 ? (
+              <>
+                <div className={styles.declaration}>
+                  <h2>PARTICIPANT CONSENT CLAUSE FOR JAEF UNDERGRADUATE SCHOLARSHIP PROGRAM</h2>
+                  <p>
+                    I hereby affirm that I have attained the age of 18years and understand that Joseph Adaramola Education Foundation(JAEF) may collect, process, store and use my
+                    personal data including my name, email address, phone number, date of birth, age, academic records, transcripts and other related data for the purpose of
+                    processing my application, and participating in the Joseph Adaramola Education Foundation(JAEF) and for other lawful purposes in line with the Nigeria Data
+                    Protection Act, 2023 (NDPA 2023).
+                  </p>
+                  <p>
+                    I take cognizance of my rights under the NDPA 2023 with regards to my personal data including the right to access, rectify, request for deletion and the right
+                    to object to the processing of such data and ultimately the right to withdraw this consent.
+                  </p>
+                  {/* <p>I also confirm that I have read and understood the SEPLAT Privacy Notice.</p> */}
+                  <p>
+                    In consideration of all the information stated herein that is within my knowledge, I hereby consent to the collection, processing, use and transfer of my
+                    personal data within or outside Nigeria, for the purposes stated herein.
+                  </p>
+                  <label>
+                    <input type="checkbox" />I agree
+                  </label>
+                </div>
+              </>
+            ) : active === 3 ? (
               <>
                 <div className={styles.double}>
                   <div className={styles.group}>
@@ -312,7 +342,7 @@ export const ApplyBody = () => {
                   {/* {errors.picture && <span className="error">{errors.picture.message}</span>} */}
                 </div>
               </>
-            ) : active === 2 ? (
+            ) : active === 4 ? (
               <>
                 <div className={styles.group}>
                   <label htmlFor="fatherFullName">Father&apos;s Full Name</label>
@@ -345,7 +375,7 @@ export const ApplyBody = () => {
                   {errors.fatherAlive && <span className="error">{errors.fatherAlive.message}</span>}
                 </div>
               </>
-            ) : active === 3 ? (
+            ) : active === 5 ? (
               <>
                 <div className={styles.department} ref={formRef}>
                   <div className={styles.group}>
@@ -382,7 +412,7 @@ export const ApplyBody = () => {
                   Click to download file: <span onClick={() => downloadPDF()}>Download</span>
                 </p>
               </>
-            ) : active === 4 ? (
+            ) : active === 6 ? (
               <>
                 <div className={styles.group}>
                   <label htmlFor="refereeName1">Referee One Name</label>
@@ -433,7 +463,7 @@ export const ApplyBody = () => {
                   {errors.refereeRecomendation2 && <span className="error">{errors.refereeRecomendation2.message}</span>}
                 </div>
               </>
-            ) : active === 5 ? (
+            ) : active === 7 ? (
               <>
                 <div className={styles.group}>
                   <label htmlFor="address">Document</label>
@@ -445,12 +475,12 @@ export const ApplyBody = () => {
                 <h4>The Status of your application is {status}</h4>
               </>
             )}
-            {active === 5 ? (
+            {active === 7 ? (
               <button>Submit</button>
-            ) : active === 6 ? null : (
+            ) : active === 8 ? null : (
               <div className={styles.buttons}>
                 {active !== 1 && <h2 onClick={() => setActive(active - 1)}>Previous</h2>}
-                <h2 onClick={() => setActive(active + 1)}>Save & Continue</h2>
+                <h2 onClick={() => setActive(active + 1)}>{active === 1 || active === 2 ? "Next" : "Save & Continue"} </h2>
               </div>
             )}
           </div>

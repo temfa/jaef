@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { Wrapper } from "@/components/wrapper";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -24,7 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} `}>
         <ToastContainer />
-        {children}
+        <Wrapper>{children}</Wrapper>
       </body>
     </html>
   );
