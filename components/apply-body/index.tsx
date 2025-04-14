@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.css";
@@ -138,7 +139,6 @@ export const ApplyBody = () => {
   };
 
   const downloadPDF = async () => {
-    console.log(formRef.current);
     if (!formRef.current) return;
 
     const canvas = await html2canvas(formRef.current);
@@ -377,7 +377,7 @@ export const ApplyBody = () => {
               </>
             ) : active === 5 ? (
               <>
-                <div className={styles.department} ref={formRef}>
+                <div className={styles.department}>
                   <div className={styles.group}>
                     <label htmlFor="long">How long has the applicant been in your department</label>
                     <input type="text" placeholder="Enter field" {...register("long", { required: "Field is required" })} />
@@ -483,6 +483,32 @@ export const ApplyBody = () => {
                 <h2 onClick={() => setActive(active + 1)}>{active === 1 || active === 2 ? "Next" : "Save & Continue"} </h2>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+      <div className={`${styles.downloadable} hiddenForPDF`} ref={formRef}>
+        <h2>Joseph Adaramola Education Foundation(JAEF)</h2>
+        <h3>Attestation by Applicant's Dean / HOD</h3>
+        <div className={styles.department}>
+          <div className={styles.group}>
+            <label htmlFor="long">How long has the applicant been in your department</label>
+            <input type="text" placeholder="" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="">Nature of Academic Programme</label>
+            <input type="text" placeholder="" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="otherInfo">Any Other Info</label>
+            <input type="text" placeholder="" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="hodName">Name of the Dean/Hod</label>
+            <input type="text" placeholder="" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="rank">Rank</label>
+            <input type="text" placeholder="" />
           </div>
         </div>
       </div>

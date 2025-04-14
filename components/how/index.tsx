@@ -17,31 +17,31 @@ export const How = () => {
               <UserSvg />
             </div>
             <h2>Sign Up</h2>
-            <p>Montes vivamus curae quisque et primis pretium nullam. Congue dis convallis eget ipsum cubilia ante.</p>
+            <p>Create your account to get started. It only takes a few minutes.</p>
           </div>
           <div className={styles.single}>
             <div>
               <AccessSvg />
             </div>
             <h2>Get Access</h2>
-            <p>Montes vivamus curae quisque et primis pretium nullam. Congue dis convallis eget ipsum cubilia ante.</p>
+            <p>Log in to access the portal and explore available opportunities.</p>
           </div>
           <div className={styles.single}>
             <div>
               <QuestionSvg />
             </div>
             <h2>Apply</h2>
-            <p>Montes vivamus curae quisque et primis pretium nullam. Congue dis convallis eget ipsum cubilia ante.</p>
+            <p>Complete and submit your application with the required details and documents.</p>
           </div>
           <div className={styles.single}>
             <div>
               <ResultSvg />
             </div>
             <h2>Get Result</h2>
-            <p>Montes vivamus curae quisque et primis pretium nullam. Congue dis convallis eget ipsum cubilia ante.</p>
+            <p>View your application results once the review process is complete.</p>
           </div>
         </div>
-        <Link href="#">Start Now</Link>
+        <Link href="/register">Start Now</Link>
       </div>
     </div>
   );

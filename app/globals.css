@@ -117,6 +117,15 @@ element::-webkit-scrollbar {
   color: #FFFFFF;
 }
 
+.hiddenForPDF {
+  position: absolute;
+  top: 0;
+  left: -10000px;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: none;
+}
+
 @media screen and (max-width: 500px) {
   .slick-track {
     overflow-x: hidden !important;

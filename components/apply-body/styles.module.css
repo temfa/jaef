@@ -222,6 +222,31 @@
     width: 177px;
     margin: 0px auto;
     text-align: center;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.downloadable {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.downloadable h2 {
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 70.4px;
+    letter-spacing: -2.56px;
+    color: black;
+    text-align: center;
+}
+
+.downloadable h3 {
+    font-size: 20px;
+    line-height: 28.8px;
+    font-weight: 500;
+    color: black;
+    text-align: center;
 }
 
 @media screen and (max-width: 500px) {
