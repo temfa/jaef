@@ -219,7 +219,8 @@ export const ApplyBody = () => {
             </div>
             {active === 1 ? (
               <>
-                <Image src="/images/ad.jpg" width={750} height={900} alt="Ad" />
+                {/* <Image src="/images/ad.jpg" width={750} height={900} alt="Ad" /> */}
+                <h2>Foundation Flyer</h2>
               </>
             ) : active === 2 ? (
               <>
