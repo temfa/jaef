@@ -10,7 +10,7 @@ import { auth, db, storage } from "@/utils/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from "firebase/storage";
 import Image from "next/image";
 
 type FormDetails = {
@@ -151,29 +151,47 @@ export const ApplyBody = () => {
     pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
     pdf.save("form.pdf"); // Download file
   };
-  const uploadImage = async (imageFile: File) => {
-    const storageRef = ref(storage, "images/" + imageFile.name); // Path in Firebase Storage
+
+  const uploadImage = async (imageFile: File, fileName: string): Promise<string | undefined> => {
+    const storagePath = `users/${userId}/images/${fileName}`;
+    const storageRef = ref(storage, storagePath);
 
     try {
-      // Upload the image
-      await uploadBytes(storageRef, imageFile);
-      console.log("File uploaded successfully!");
+      // Try to get metadata (check if file exists)
+      await getMetadata(storageRef);
+      console.log("File already exists. Deleting...");
 
-      // Get the download URL of the uploaded file
+      // If metadata fetch succeeds, file exists — delete it
+      await deleteObject(storageRef);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      // If error is 'object-not-found', it's fine — just means no file to delete
+      if (error.code === "storage/object-not-found") {
+      } else {
+        console.error("Error checking file existence:", error);
+        return; // Optionally exit if something else went wrong
+      }
+    }
+
+    try {
+      // Upload the new image
+      await uploadBytes(storageRef, imageFile);
+      console.log("New file uploaded successfully!");
+
+      // Get the download URL
       const downloadURL = await getDownloadURL(storageRef);
       console.log("Download URL:", downloadURL);
 
-      return downloadURL; // This is the URL you can use to access the image
-    } catch (error) {
-      console.error("Error uploading file:", error);
+      return downloadURL;
+    } catch (uploadError) {
+      console.error("Error uploading file:", uploadError);
     }
   };
 
   const handleFileChange1 = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
     if (file) {
-      const url = await uploadImage(file);
+      const url = await uploadImage(file, "Picture");
       if (url) setPicture(url);
     }
   };
@@ -181,7 +199,7 @@ export const ApplyBody = () => {
     const file = event.target.files?.[0];
 
     if (file) {
-      const url = await uploadImage(file);
+      const url = await uploadImage(file, "Document");
       if (url) setDocument(url);
     }
   };
@@ -410,8 +428,9 @@ export const ApplyBody = () => {
                   </div>
                 </div>
                 <p>
-                  Click to download file: <span onClick={() => downloadPDF()}>Download</span>
+                  Click to download form: <span onClick={() => downloadPDF()}>Download</span>
                 </p>
+                <p>Note: You would have to upload a fully signed and stamped form at the last step to be able to apply</p>
               </>
             ) : active === 6 ? (
               <>
@@ -491,6 +510,32 @@ export const ApplyBody = () => {
         <h2>Joseph Adaramola Education Foundation(JAEF)</h2>
         <h3>Attestation by Applicant's Dean / HOD</h3>
         <div className={styles.department}>
+          <div className={styles.double}>
+            <div className={styles.group}>
+              <label htmlFor="long">First Name</label>
+              <input type="text" placeholder="" {...register("fname")} />
+            </div>
+            <div className={styles.group}>
+              <label htmlFor="long">Last Name</label>
+              <input type="text" placeholder="" {...register("lname")} />
+            </div>
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="long">Gender</label>
+            <input type="text" placeholder="" {...register("sex")} />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="long">Department</label>
+            <input type="text" placeholder="" {...register("course")} />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="long">Matric No.</label>
+            <input type="text" placeholder="" {...register("matricNo")} />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="long">Level/CGPA</label>
+            <input type="text" placeholder="" {...register("cgpa")} />
+          </div>
           <div className={styles.group}>
             <label htmlFor="long">How long has the applicant been in your department</label>
             <input type="text" placeholder="" />

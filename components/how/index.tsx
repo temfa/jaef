@@ -16,21 +16,21 @@ export const How = () => {
             <div>
               <UserSvg />
             </div>
-            <h2>Sign Up</h2>
+            <Link href="/register">Sign Up</Link>
             <p>Create your account to get started. It only takes a few minutes.</p>
           </div>
           <div className={styles.single}>
             <div>
               <AccessSvg />
             </div>
-            <h2>Get Access</h2>
+            <Link href="/login">Get Access</Link>
             <p>Log in to access the portal and explore available opportunities.</p>
           </div>
           <div className={styles.single}>
             <div>
               <QuestionSvg />
             </div>
-            <h2>Apply</h2>
+            <Link href="/login">Apply</Link>
             <p>Complete and submit your application with the required details and documents.</p>
           </div>
           <div className={styles.single}>
