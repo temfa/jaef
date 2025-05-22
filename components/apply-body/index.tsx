@@ -52,10 +52,14 @@ type FormDetails = {
 
 export const ApplyBody = () => {
   const formRef = useRef<HTMLDivElement>(null);
+  const formRef2 = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(1);
   const [userId, setUserId] = useState("");
   const [picture, setPicture] = useState("");
   const [document, setDocument] = useState("");
+  const [idCard, setIdCard] = useState("");
+  const [admissionLetter, setAdmissionLetter] = useState("");
+  const [referee, setReferee] = useState("");
   const [status, setStatus] = useState("");
   const {
     register,
@@ -124,7 +128,10 @@ export const ApplyBody = () => {
 
   const submit: SubmitHandler<FormDetails> = async (e) => {
     if (picture === "") toast.error("You need to upload a picture");
-    else if (document === "") toast.error("You need to upload the HOD/ Dean File");
+    else if (document === "") toast.error("You need to upload the HOD/ Dean Attestation");
+    else if (admissionLetter === "") toast.error("You need to upload your Admission Letter");
+    else if (idCard === "") toast.error("You need to upload your IDCard");
+    else if (referee === "") toast.error("You need to upload your Referee form");
     else {
       try {
         const newObj = { ...e, picture, document, status: "Applied", userId };
@@ -150,6 +157,20 @@ export const ApplyBody = () => {
 
     pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
     pdf.save("form.pdf"); // Download file
+  };
+
+  const downloadPDF2 = async () => {
+    if (!formRef2.current) return;
+
+    const canvas = await html2canvas(formRef2.current);
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgWidth = 190; // Adjust width
+    const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+
+    pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+    pdf.save("referee.pdf"); // Download file
   };
 
   const uploadImage = async (imageFile: File, fileName: string): Promise<string | undefined> => {
@@ -203,6 +224,30 @@ export const ApplyBody = () => {
       if (url) setDocument(url);
     }
   };
+  const handleFileChange3 = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const url = await uploadImage(file, "IDcard");
+      if (url) setIdCard(url);
+    }
+  };
+  const handleFileChange4 = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const url = await uploadImage(file, "Admission Letter");
+      if (url) setAdmissionLetter(url);
+    }
+  };
+  const handleFileChange5 = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const url = await uploadImage(file, "Referee");
+      if (url) setReferee(url);
+    }
+  };
 
   return (
     <form className={styles.container} onSubmit={handleSubmit(submit)}>
@@ -237,8 +282,7 @@ export const ApplyBody = () => {
             </div>
             {active === 1 ? (
               <>
-                {/* <Image src="/images/ad.jpg" width={750} height={900} alt="Ad" /> */}
-                <h2>Foundation Flyer</h2>
+                <Image src="/images/ad.jpeg" width={750} height={900} alt="Ad" />
               </>
             ) : active === 2 ? (
               <>
@@ -428,66 +472,84 @@ export const ApplyBody = () => {
                   </div>
                 </div>
                 <p>
-                  Click to download form: <span onClick={() => downloadPDF()}>Download</span>
+                  Click to download form: <span onClick={() => downloadPDF()}>Print</span>
                 </p>
                 <p>Note: You would have to upload a fully signed and stamped form at the last step to be able to apply</p>
               </>
             ) : active === 6 ? (
               <>
-                <div className={styles.group}>
-                  <label htmlFor="refereeName1">Referee One Name</label>
-                  <input type="text" placeholder="Enter your Referee One Name" {...register("refereeName1", { required: "Name of Referee one is required" })} />
-                  {errors.refereeName1 && <span className="error">{errors.refereeName1.message}</span>}
+                <div className={styles.department}>
+                  <div className={styles.group}>
+                    <label htmlFor="refereeName1">Referee One Name</label>
+                    <input type="text" placeholder="Enter your Referee One Name" {...register("refereeName1", { required: "Name of Referee one is required" })} />
+                    {errors.refereeName1 && <span className="error">{errors.refereeName1.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="refereeAddress1">Referee One Address</label>
+                    <input type="text" placeholder="Enter your Refereee's Address" {...register("refereeAddress1", { required: "Referee Address is required" })} />
+                    {errors.refereeAddress1 && <span className="error">{errors.refereeAddress1.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="refereeOccupation1">Referee One Occupation</label>
+                    <input type="text" placeholder="Enter your Referee's Occupation" {...register("refereeOccupation1", { required: "Referee Occupation is required" })} />
+                    {errors.refereeOccupation1 && <span className="error">{errors.refereeOccupation1.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="refereeRecomendation1">Referee One Recommendation</label>
+                    <input
+                      type="text"
+                      placeholder="Enter your Referee's Recommendation"
+                      {...register("refereeRecomendation1", { required: "Referee's Recommendation is required" })}
+                    />
+                    {errors.refereeRecomendation1 && <span className="error">{errors.refereeRecomendation1.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="refereeName2">Referee Two Name</label>
+                    <input type="text" placeholder="Enter your Referee Two Name" {...register("refereeName2", { required: "Name of Referee Two is required" })} />
+                    {errors.refereeName2 && <span className="error">{errors.refereeName2.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="refereeAddress2">Referee Two Address</label>
+                    <input type="text" placeholder="Enter your Refereee's Address" {...register("refereeAddress2", { required: "Referee Address is required" })} />
+                    {errors.refereeAddress2 && <span className="error">{errors.refereeAddress2.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="refereeOccupation2">Referee Two Occupation</label>
+                    <input type="text" placeholder="Enter your Referee's Occupation" {...register("refereeOccupation2", { required: "Referee Occupation is required" })} />
+                    {errors.refereeOccupation2 && <span className="error">{errors.refereeOccupation2.message}</span>}
+                  </div>
+                  <div className={styles.group}>
+                    <label htmlFor="refereeRecomendation2">Referee Two Recommendation</label>
+                    <input
+                      type="text"
+                      placeholder="Enter your Referee's Recommendation"
+                      {...register("refereeRecomendation2", { required: "Referee's Recommendation is required" })}
+                    />
+                    {errors.refereeRecomendation2 && <span className="error">{errors.refereeRecomendation2.message}</span>}
+                  </div>
                 </div>
-                <div className={styles.group}>
-                  <label htmlFor="refereeAddress1">Referee One Address</label>
-                  <input type="text" placeholder="Enter your Refereee's Address" {...register("refereeAddress1", { required: "Referee Address is required" })} />
-                  {errors.refereeAddress1 && <span className="error">{errors.refereeAddress1.message}</span>}
-                </div>
-                <div className={styles.group}>
-                  <label htmlFor="refereeOccupation1">Referee One Occupation</label>
-                  <input type="text" placeholder="Enter your Referee's Occupation" {...register("refereeOccupation1", { required: "Referee Occupation is required" })} />
-                  {errors.refereeOccupation1 && <span className="error">{errors.refereeOccupation1.message}</span>}
-                </div>
-                <div className={styles.group}>
-                  <label htmlFor="refereeRecomendation1">Referee One Recommendation</label>
-                  <input
-                    type="text"
-                    placeholder="Enter your Referee's Recommendation"
-                    {...register("refereeRecomendation1", { required: "Referee's Recommendation is required" })}
-                  />
-                  {errors.refereeRecomendation1 && <span className="error">{errors.refereeRecomendation1.message}</span>}
-                </div>
-                <div className={styles.group}>
-                  <label htmlFor="refereeName2">Referee Two Name</label>
-                  <input type="text" placeholder="Enter your Referee Two Name" {...register("refereeName2", { required: "Name of Referee Two is required" })} />
-                  {errors.refereeName2 && <span className="error">{errors.refereeName2.message}</span>}
-                </div>
-                <div className={styles.group}>
-                  <label htmlFor="refereeAddress2">Referee Two Address</label>
-                  <input type="text" placeholder="Enter your Refereee's Address" {...register("refereeAddress2", { required: "Referee Address is required" })} />
-                  {errors.refereeAddress2 && <span className="error">{errors.refereeAddress2.message}</span>}
-                </div>
-                <div className={styles.group}>
-                  <label htmlFor="refereeOccupation2">Referee Two Occupation</label>
-                  <input type="text" placeholder="Enter your Referee's Occupation" {...register("refereeOccupation2", { required: "Referee Occupation is required" })} />
-                  {errors.refereeOccupation2 && <span className="error">{errors.refereeOccupation2.message}</span>}
-                </div>
-                <div className={styles.group}>
-                  <label htmlFor="refereeRecomendation2">Referee Two Recommendation</label>
-                  <input
-                    type="text"
-                    placeholder="Enter your Referee's Recommendation"
-                    {...register("refereeRecomendation2", { required: "Referee's Recommendation is required" })}
-                  />
-                  {errors.refereeRecomendation2 && <span className="error">{errors.refereeRecomendation2.message}</span>}
-                </div>
+                <p>
+                  Click to download form: <span onClick={() => downloadPDF2()}>Print</span>
+                </p>
+                <p>Note: You would have to upload a fully signed and stamped form at the last step to be able to apply</p>
               </>
             ) : active === 7 ? (
               <>
                 <div className={styles.group}>
-                  <label htmlFor="address">Document</label>
+                  <label htmlFor="address">Dean/HOD Attestation form</label>
                   <input type="file" placeholder="Enter your Picture" onChange={handleFileChange2} />
+                </div>
+                <div className={styles.group}>
+                  <label htmlFor="address">ID Card</label>
+                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange3} />
+                </div>
+                <div className={styles.group}>
+                  <label htmlFor="address">Admission Letter</label>
+                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange4} />
+                </div>
+                <div className={styles.group}>
+                  <label htmlFor="address">Referee Form</label>
+                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange5} />
                 </div>
               </>
             ) : (
@@ -555,6 +617,53 @@ export const ApplyBody = () => {
           <div className={styles.group}>
             <label htmlFor="rank">Rank</label>
             <input type="text" placeholder="" />
+          </div>
+          <div className={styles.signature}>
+            <p>Stamp and Signature</p>
+          </div>
+        </div>
+      </div>
+      <div className={`${styles.downloadable} hiddenForPDF`} ref={formRef2}>
+        <h2>Joseph Adaramola Education Foundation(JAEF)</h2>
+        <h3>Attestation by Referees</h3>
+        <div className={styles.department}>
+          <div className={styles.group}>
+            <label htmlFor="refereeName1">Referee One Name</label>
+            <input type="text" placeholder="" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="refereeAddress1">Referee One Address</label>
+            <input type="text" placeholder="" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="refereeOccupation1">Referee One Occupation</label>
+            <input type="text" placeholder="" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="refereeRecomendation1">Referee One Recommendation</label>
+            <input type="text" />
+          </div>
+          <div className={styles.signature}>
+            <p> Signature and Date</p>
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="refereeName2">Referee Two Name</label>
+            <input type="text" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="refereeAddress2">Referee Two Address</label>
+            <input type="text" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="refereeOccupation2">Referee Two Occupation</label>
+            <input type="text" />
+          </div>
+          <div className={styles.group}>
+            <label htmlFor="refereeRecomendation2">Referee Two Recommendation</label>
+            <input type="text" />
+          </div>
+          <div className={styles.signature}>
+            <p> Signature and Date</p>
           </div>
         </div>
       </div>
