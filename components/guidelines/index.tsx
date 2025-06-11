@@ -37,7 +37,7 @@ export const Guidelines = () => {
           <p>An interested person shall:</p>
           <ul>
             <li>Vist the foundation&apos;s Website </li>
-            <li>A duly completed application form</li>
+            <li>Duly complete online application form</li>
           </ul>
         </div>
       </div>
@@ -46,6 +46,7 @@ export const Guidelines = () => {
         <div className={styles.content}>
           <h2>Approval and Mode of Disbursement</h2>
           <p>Approval to benefit from the foundation financial assistance shall be given by the founder upon the recommendation of the Board of Trustees</p>
+          <p>Cheques were distributed as such as the earlier edition in recent edition&apos;s direct cash/fund credit was done into the account of individual beneficiary. </p>
           <p>
             Cheques shall be distributed to successful applicants at a formal gathering in Ibaram-Akoko. This is to inspire other students to work hard to qualify for the
             foundation financial assistance and to encourage the young secondary students to pay the desired attention to their academic activities

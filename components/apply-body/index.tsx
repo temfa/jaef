@@ -479,52 +479,46 @@ export const ApplyBody = () => {
             ) : active === 6 ? (
               <>
                 <div className={styles.department}>
+                  <h2>Referee One</h2>
                   <div className={styles.group}>
-                    <label htmlFor="refereeName1">Referee One Name</label>
-                    <input type="text" placeholder="Enter your Referee One Name" {...register("refereeName1", { required: "Name of Referee one is required" })} />
+                    <label htmlFor="refereeName1">Name</label>
+                    <input type="text" placeholder="Enter your Name" {...register("refereeName1", { required: "Name of is required" })} />
                     {errors.refereeName1 && <span className="error">{errors.refereeName1.message}</span>}
                   </div>
                   <div className={styles.group}>
-                    <label htmlFor="refereeAddress1">Referee One Address</label>
-                    <input type="text" placeholder="Enter your Refereee's Address" {...register("refereeAddress1", { required: "Referee Address is required" })} />
+                    <label htmlFor="refereeAddress1">Address</label>
+                    <input type="text" placeholder="Enter your  Address" {...register("refereeAddress1", { required: "Address is required" })} />
                     {errors.refereeAddress1 && <span className="error">{errors.refereeAddress1.message}</span>}
                   </div>
                   <div className={styles.group}>
-                    <label htmlFor="refereeOccupation1">Referee One Occupation</label>
-                    <input type="text" placeholder="Enter your Referee's Occupation" {...register("refereeOccupation1", { required: "Referee Occupation is required" })} />
+                    <label htmlFor="refereeOccupation1">Occupation</label>
+                    <input type="text" placeholder="Enter your  Occupation" {...register("refereeOccupation1", { required: " Occupation is required" })} />
                     {errors.refereeOccupation1 && <span className="error">{errors.refereeOccupation1.message}</span>}
                   </div>
                   <div className={styles.group}>
-                    <label htmlFor="refereeRecomendation1">Referee One Recommendation</label>
-                    <input
-                      type="text"
-                      placeholder="Enter your Referee's Recommendation"
-                      {...register("refereeRecomendation1", { required: "Referee's Recommendation is required" })}
-                    />
+                    <label htmlFor="refereeRecomendation1">Recommendation</label>
+                    <input type="text" placeholder="Enter your  Recommendation" {...register("refereeRecomendation1", { required: " Recommendation is required" })} />
                     {errors.refereeRecomendation1 && <span className="error">{errors.refereeRecomendation1.message}</span>}
                   </div>
+                  <h2>Referee Two</h2>
                   <div className={styles.group}>
-                    <label htmlFor="refereeName2">Referee Two Name</label>
-                    <input type="text" placeholder="Enter your Referee Two Name" {...register("refereeName2", { required: "Name of Referee Two is required" })} />
+                    <label htmlFor="refereeName2">Name</label>
+                    <input type="text" placeholder="Enter your Name" {...register("refereeName2", { required: "Name  is required" })} />
                     {errors.refereeName2 && <span className="error">{errors.refereeName2.message}</span>}
                   </div>
                   <div className={styles.group}>
-                    <label htmlFor="refereeAddress2">Referee Two Address</label>
-                    <input type="text" placeholder="Enter your Refereee's Address" {...register("refereeAddress2", { required: "Referee Address is required" })} />
+                    <label htmlFor="refereeAddress2">Address</label>
+                    <input type="text" placeholder="Enter your  Address" {...register("refereeAddress2", { required: "Referee Address is required" })} />
                     {errors.refereeAddress2 && <span className="error">{errors.refereeAddress2.message}</span>}
                   </div>
                   <div className={styles.group}>
-                    <label htmlFor="refereeOccupation2">Referee Two Occupation</label>
-                    <input type="text" placeholder="Enter your Referee's Occupation" {...register("refereeOccupation2", { required: "Referee Occupation is required" })} />
+                    <label htmlFor="refereeOccupation2">Occupation</label>
+                    <input type="text" placeholder="Enter your  Occupation" {...register("refereeOccupation2", { required: "Referee Occupation is required" })} />
                     {errors.refereeOccupation2 && <span className="error">{errors.refereeOccupation2.message}</span>}
                   </div>
                   <div className={styles.group}>
-                    <label htmlFor="refereeRecomendation2">Referee Two Recommendation</label>
-                    <input
-                      type="text"
-                      placeholder="Enter your Referee's Recommendation"
-                      {...register("refereeRecomendation2", { required: "Referee's Recommendation is required" })}
-                    />
+                    <label htmlFor="refereeRecomendation2">Recommendation</label>
+                    <input type="text" placeholder="Enter your  Recommendation" {...register("refereeRecomendation2", { required: " Recommendation is required" })} />
                     {errors.refereeRecomendation2 && <span className="error">{errors.refereeRecomendation2.message}</span>}
                   </div>
                 </div>
@@ -627,39 +621,41 @@ export const ApplyBody = () => {
         <h2>Joseph Adaramola Education Foundation(JAEF)</h2>
         <h3>Attestation by Referees</h3>
         <div className={styles.department}>
+          <h2>Referee One</h2>
           <div className={styles.group}>
-            <label htmlFor="refereeName1">Referee One Name</label>
+            <label htmlFor="refereeName1"> Name</label>
             <input type="text" placeholder="" />
           </div>
           <div className={styles.group}>
-            <label htmlFor="refereeAddress1">Referee One Address</label>
+            <label htmlFor="refereeAddress1"> Address</label>
             <input type="text" placeholder="" />
           </div>
           <div className={styles.group}>
-            <label htmlFor="refereeOccupation1">Referee One Occupation</label>
+            <label htmlFor="refereeOccupation1"> Occupation</label>
             <input type="text" placeholder="" />
           </div>
           <div className={styles.group}>
-            <label htmlFor="refereeRecomendation1">Referee One Recommendation</label>
+            <label htmlFor="refereeRecomendation1"> Recommendation</label>
             <input type="text" />
           </div>
           <div className={styles.signature}>
             <p> Signature and Date</p>
           </div>
+          <h2>Referee Two</h2>
           <div className={styles.group}>
-            <label htmlFor="refereeName2">Referee Two Name</label>
+            <label htmlFor="refereeName2"> Name</label>
             <input type="text" />
           </div>
           <div className={styles.group}>
-            <label htmlFor="refereeAddress2">Referee Two Address</label>
+            <label htmlFor="refereeAddress2"> Address</label>
             <input type="text" />
           </div>
           <div className={styles.group}>
-            <label htmlFor="refereeOccupation2">Referee Two Occupation</label>
+            <label htmlFor="refereeOccupation2"> Occupation</label>
             <input type="text" />
           </div>
           <div className={styles.group}>
-            <label htmlFor="refereeRecomendation2">Referee Two Recommendation</label>
+            <label htmlFor="refereeRecomendation2"> Recommendation</label>
             <input type="text" />
           </div>
           <div className={styles.signature}>
