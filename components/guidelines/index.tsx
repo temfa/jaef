@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React from "react";
 import styles from "./styles.module.css";
 import Image from "next/image";
@@ -47,6 +48,44 @@ export const Guidelines = () => {
           <h2>Approval and Mode of Disbursement</h2>
           <p>Approval to benefit from the foundation financial assistance shall be given by the founder upon the recommendation of the Board of Trustees</p>
           <p>Cheques were distributed as such as the earlier edition in recent edition&apos;s direct cash/fund credit was done into the account of individual beneficiary. </p>
+          <div className={styles.table}>
+            <div className={styles.single}>
+              <p>Year</p>
+              <p>Edition</p>
+              <p>Beneficiary Count</p>
+              <p>Amount Disbursed(#)</p>
+            </div>
+            <div className={styles.single}>
+              <p>2016</p>
+              <p>First</p>
+              <p>4</p>
+              <p>120,000</p>
+            </div>
+            <div className={styles.single}>
+              <p>2017</p>
+              <p>Second</p>
+              <p>6</p>
+              <p>180,000</p>
+            </div>
+            <div className={styles.single}>
+              <p>2018</p>
+              <p>Third</p>
+              <p>9</p>
+              <p>170,000</p>
+            </div>
+            <div className={styles.single}>
+              <p>2019</p>
+              <p>Fourth</p>
+              <p>8</p>
+              <p>140,000</p>
+            </div>
+          </div>
+          <p>
+            The first edition of Joseph Adaramola's Educational Foundation was held in 2016, where the sum of One hundred and twenty thousand (N120,000) Naira was disbursed were to
+            Four (4) beneficiaries. While, in 2017 Six(6) beneficiaries were given a total sum of One hundred and eighty thousand naira( N180, 000.00. This marked her second
+            edition. Years 2018 and 2019 editions which were the third and forth editions, Nine(9) and Eight(8) beneficiaries benefited from the foundation with amounts of Two
+            hundred and seventy thousand (N270,00) Naira and Two hundred and forty thousand (N240,000) Naira respectively
+          </p>
           <p>
             Cheques shall be distributed to successful applicants at a formal gathering in Ibaram-Akoko. This is to inspire other students to work hard to qualify for the
             foundation financial assistance and to encourage the young secondary students to pay the desired attention to their academic activities
