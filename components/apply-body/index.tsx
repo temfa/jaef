@@ -6,11 +6,10 @@ import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { formLabels } from "@/utils/data";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { auth, db, storage } from "@/utils/firebase";
+import { auth, db } from "@/utils/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { deleteObject, getDownloadURL, getMetadata, ref, uploadBytes } from "firebase/storage";
 import Image from "next/image";
 
 type FormDetails = {
@@ -48,6 +47,11 @@ type FormDetails = {
   refereeAddress2: string;
   refereeOccupation2: string;
   refereeRecomendation2: string;
+  idCard: FileList;
+  admissionLetter: FileList;
+  referee: FileList;
+  picture: FileList;
+  document: FileList;
 };
 
 export const ApplyBody = () => {
@@ -55,11 +59,6 @@ export const ApplyBody = () => {
   const formRef2 = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(1);
   const [userId, setUserId] = useState("");
-  const [picture, setPicture] = useState("");
-  const [document, setDocument] = useState("");
-  const [idCard, setIdCard] = useState("");
-  const [admissionLetter, setAdmissionLetter] = useState("");
-  const [referee, setReferee] = useState("");
   const [status, setStatus] = useState("");
   const {
     register,
@@ -126,22 +125,41 @@ export const ApplyBody = () => {
     }
   }, [formValues, userId]);
 
-  const submit: SubmitHandler<FormDetails> = async (e) => {
-    if (picture === "") toast.error("You need to upload a picture");
-    else if (document === "") toast.error("You need to upload the HOD/ Dean Attestation");
-    else if (admissionLetter === "") toast.error("You need to upload your Admission Letter");
-    else if (idCard === "") toast.error("You need to upload your IDCard");
-    else if (referee === "") toast.error("You need to upload your Referee form");
-    else {
-      try {
-        const newObj = { ...e, picture, document, status: "Applied", userId };
-        await saveFormProgress(userId, newObj);
+  const uploadAndAssign = async (fileList: FileList | undefined): Promise<string> => {
+    if (!fileList || fileList.length === 0) return "";
+    const uploadedUrl = await uploadToCloudinary(fileList[0]);
+    if (!uploadedUrl) {
+      throw new Error(`Failed to upload `);
+    }
+    return uploadedUrl;
+  };
 
-        toast.success("Application successfully! Kindly check back later");
-      } catch (error) {
-        console.log(error);
-        toast.error("Error saving form. Please try again.");
-      }
+  const submit: SubmitHandler<FormDetails> = async (e) => {
+    try {
+      const [picture, document, admissionLetter, idCard, referee] = await Promise.all([
+        uploadAndAssign(e.picture),
+        uploadAndAssign(e.document),
+        uploadAndAssign(e.admissionLetter),
+        uploadAndAssign(e.idCard),
+        uploadAndAssign(e.referee),
+      ]);
+
+      const newObj = {
+        ...e,
+        picture,
+        document,
+        admissionLetter,
+        idCard,
+        referee,
+        status: "Applied",
+        userId,
+      };
+
+      await saveFormProgress(userId, newObj);
+      toast.success("Application successful! Kindly check back later");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error saving form. Please try again.");
     }
   };
 
@@ -173,79 +191,23 @@ export const ApplyBody = () => {
     pdf.save("referee.pdf"); // Download file
   };
 
-  const uploadImage = async (imageFile: File, fileName: string): Promise<string | undefined> => {
-    const storagePath = `users/${userId}/images/${fileName}`;
-    const storageRef = ref(storage, storagePath);
+  const uploadToCloudinary = async (file: File): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "scholarship"); // from Cloudinary settings
+    formData.append("cloud_name", "temfad");
 
     try {
-      // Try to get metadata (check if file exists)
-      await getMetadata(storageRef);
-      console.log("File already exists. Deleting...");
+      const res = await fetch("https://api.cloudinary.com/v1_1/temfad/image/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-      // If metadata fetch succeeds, file exists — delete it
-      await deleteObject(storageRef);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      // If error is 'object-not-found', it's fine — just means no file to delete
-      if (error.code === "storage/object-not-found") {
-      } else {
-        console.error("Error checking file existence:", error);
-        return; // Optionally exit if something else went wrong
-      }
-    }
-
-    try {
-      // Upload the new image
-      await uploadBytes(storageRef, imageFile);
-      console.log("New file uploaded successfully!");
-
-      // Get the download URL
-      const downloadURL = await getDownloadURL(storageRef);
-      console.log("Download URL:", downloadURL);
-
-      return downloadURL;
-    } catch (uploadError) {
-      console.error("Error uploading file:", uploadError);
-    }
-  };
-
-  const handleFileChange1 = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const url = await uploadImage(file, "Picture");
-      if (url) setPicture(url);
-    }
-  };
-  const handleFileChange2 = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      const url = await uploadImage(file, "Document");
-      if (url) setDocument(url);
-    }
-  };
-  const handleFileChange3 = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      const url = await uploadImage(file, "IDcard");
-      if (url) setIdCard(url);
-    }
-  };
-  const handleFileChange4 = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      const url = await uploadImage(file, "Admission Letter");
-      if (url) setAdmissionLetter(url);
-    }
-  };
-  const handleFileChange5 = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      const url = await uploadImage(file, "Referee");
-      if (url) setReferee(url);
+      const data = await res.json();
+      return data.secure_url; // this is the hosted image URL
+    } catch (err) {
+      console.error("Upload failed:", err);
+      return null;
     }
   };
 
@@ -401,8 +363,8 @@ export const ApplyBody = () => {
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="address">Picture</label>
-                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange1} />
-                  {/* {errors.picture && <span className="error">{errors.picture.message}</span>} */}
+                  <input type="file" placeholder="Enter your Picture" {...register("picture", { required: "Picture is required" })} />
+                  {errors.picture && <span className="error">{errors.picture.message}</span>}
                 </div>
               </>
             ) : active === 4 ? (
@@ -531,19 +493,19 @@ export const ApplyBody = () => {
               <>
                 <div className={styles.group}>
                   <label htmlFor="address">Dean/HOD Attestation form</label>
-                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange2} />
+                  <input type="file" placeholder="Enter your Picture" {...register("document", { required: "Attestation Form is required" })} />
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="address">ID Card</label>
-                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange3} />
+                  <input type="file" placeholder="Enter your Picture" {...register("idCard", { required: "ID Card is required" })} />
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="address">Admission Letter</label>
-                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange4} />
+                  <input type="file" placeholder="Enter your Picture" {...register("admissionLetter", { required: "Admission Letter is required" })} />
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="address">Referee Form</label>
-                  <input type="file" placeholder="Enter your Picture" onChange={handleFileChange5} />
+                  <input type="file" placeholder="Enter your Picture" {...register("referee", { required: "Referee Form is required" })} />
                 </div>
               </>
             ) : (
