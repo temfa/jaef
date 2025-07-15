@@ -385,7 +385,7 @@ export const ApplyBody = () => {
                   {errors.fatherOccupation && <span className="error">{errors.fatherOccupation.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="fatherAddress">Residential Address of Parents</label>
+                  <label htmlFor="fatherAddress">Residential Address of Parent</label>
                   <input type="text" placeholder="Enter Address" {...register("fatherAddress", { required: "Address is required" })} />
                   {errors.fatherAddress && <span className="error">{errors.fatherAddress.message}</span>}
                 </div>
