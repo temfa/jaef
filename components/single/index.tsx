@@ -27,7 +27,7 @@ type FormDetails = {
   fatherTown: string;
   fatherOccupation: string;
   fatherAddress: string;
-  fatherIncome: string;
+  // fatherIncome: string;
   fatherAlive: string;
   long: string;
   nature: string;
@@ -206,10 +206,10 @@ export const Single = ({ id }: { id: string }) => {
                   <label htmlFor="fatherAddress">Residential Address of Parents</label>
                   <input type="text" readOnly placeholder="Enter Address" {...register("fatherAddress", { required: "Address is required" })} />
                 </div>
-                <div className={styles.group}>
+                {/* <div className={styles.group}>
                   <label htmlFor="fatherIncome">Estimated Annual Income of Parents</label>
                   <input type="text" readOnly placeholder="Enter  Annual Income" {...register("fatherIncome", { required: "Annual Income is required" })} />
-                </div>
+                </div> */}
                 <div className={styles.group}>
                   <label htmlFor="fatherAlive">State whether living or dead</label>
                   <input type="text" readOnly placeholder="Enter  Field" {...register("fatherAlive", { required: "Field is required" })} />

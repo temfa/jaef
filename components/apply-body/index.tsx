@@ -32,7 +32,7 @@ type FormDetails = {
   fatherTown: string;
   fatherOccupation: string;
   fatherAddress: string;
-  fatherIncome: string;
+  // fatherIncome: string;
   fatherAlive: string;
   long: string;
   nature: string;
@@ -389,11 +389,11 @@ export const ApplyBody = () => {
                   <input type="text" placeholder="Enter Address" {...register("fatherAddress", { required: "Address is required" })} />
                   {errors.fatherAddress && <span className="error">{errors.fatherAddress.message}</span>}
                 </div>
-                <div className={styles.group}>
+                {/* <div className={styles.group}>
                   <label htmlFor="fatherIncome">Estimated Annual Income of Parents</label>
                   <input type="text" placeholder="Enter  Annual Income" {...register("fatherIncome", { required: "Annual Income is required" })} />
                   {errors.fatherIncome && <span className="error">{errors.fatherIncome.message}</span>}
-                </div>
+                </div> */}
                 <div className={styles.group}>
                   <label htmlFor="fatherAlive">State whether living or dead</label>
                   <input type="text" placeholder="Enter  Field" {...register("fatherAlive", { required: "Field is required" })} />

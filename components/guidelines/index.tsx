@@ -81,7 +81,7 @@ export const Guidelines = () => {
             </div>
           </div>
           <p>
-            The first edition of Joseph Adaramola's Educational Foundation was held in 2016, where the sum of One hundred and twenty thousand (N120,000) Naira was disbursed to Four
+            The first edition of Joseph Adaramola Educational Foundation was held in 2016, where the sum of One hundred and twenty thousand (N120,000) Naira was disbursed to Four
             (4) beneficiaries. In 2017 Six(6) beneficiaries were given a total sum of One hundred and eighty thousand naira( N180, 000.00). This marked her second edition. Years
             2018 and 2019 editions which were the third and forth editions, Nine(9) and Eight(8) beneficiaries benefited from the foundation with amounts of Two hundred and seventy
             thousand (N270,00) Naira and Two hundred and forty thousand (N240,000) Naira respectively
