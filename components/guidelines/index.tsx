@@ -24,7 +24,7 @@ export const Guidelines = () => {
           <p>To qualify for the assistance, an applicant must fulfill the following conditions:</p>
           <ul>
             <li>Must be an Indigene of Ibaram-Akoko, from a relatively poor family background</li>
-            <li>He or she must be based Ibaram</li>
+            <li>He or she must be based in Ibaram</li>
             <li>Must be a person of impeccable character</li>
             <li>Must be a student of the aforementioned institutions of higher learning</li>
             <li>Must possess not less than a CGPA of 2.5</li>
