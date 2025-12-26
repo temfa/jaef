@@ -6,6 +6,7 @@ import { formLabels } from "@/utils/data";
 import { doc, DocumentData, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 type FormDetails = {
   fname: string;
@@ -42,17 +43,32 @@ type FormDetails = {
   refereeAddress2: string;
   refereeOccupation2: string;
   refereeRecomendation2: string;
+  idCard: string;
+  admissionLetter: string;
+  referee: string;
+  picture: string;
+  document: string;
 };
 export const Single = ({ id }: { id: string }) => {
   const [status, setStatus] = useState("");
   const [active, setActive] = useState(1);
   const [data, setData] = useState<DocumentData>({});
   const { register, setValue } = useForm<FormDetails>();
+  const [picture, setPicture] = useState(null);
+  const [admissionLetter, setAdmissionLetter] = useState(null);
+  const [idCard, setIdCard] = useState(null);
+  const [document, setDocument] = useState(null);
+  const [referee, setreferee] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const savedData = await loadFormProgress(id);
       if (savedData) {
+        setPicture(savedData.picture);
+        setAdmissionLetter(savedData.admissionLetter);
+        setIdCard(savedData.idCard);
+        setDocument(savedData.document);
+        setreferee(savedData.referee);
         Object.entries(savedData).forEach(([key, value]) => setValue(key as keyof FormDetails, value));
         if (savedData.status) setStatus(savedData.status);
         setData(savedData);
@@ -81,14 +97,15 @@ export const Single = ({ id }: { id: string }) => {
       console.error("Error saving progress:", error);
     }
   };
+
   return (
     <form className={styles.container}>
       <div className={styles.wrapper}>
         <div className={styles.left}>
-          {formLabels?.map((item, index) => {
+          {formLabels?.slice(2)?.map((item, index) => {
             return (
               <h3 key={index} onClick={() => setActive(index + 1)} className={active === index + 1 ? styles.active : ""}>
-                {item}
+                {item === "Upload Documents" ? "Documents" : item}
               </h3>
             );
           })}
@@ -185,7 +202,7 @@ export const Single = ({ id }: { id: string }) => {
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="address">Picture</label>
-                  {/* <input type="file" placeholder="Enter your Picture" onChange={handleFileChange1} /> */}
+                  {picture && <Image width={200} height={200} src={picture} alt="Picture" />}
                 </div>
               </>
             ) : active === 2 ? (
@@ -293,8 +310,20 @@ export const Single = ({ id }: { id: string }) => {
             ) : active === 5 ? (
               <>
                 <div className={styles.group}>
-                  <label htmlFor="address">Document</label>
-                  {/* <input type="file" placeholder="Enter your Picture" onChange={handleFileChange2} /> */}
+                  <label htmlFor="address">Dean/HOD Attestation form</label>
+                  {document && <Image width={200} height={200} src={document} alt="Picture" />}
+                </div>
+                <div className={styles.group}>
+                  <label htmlFor="address">ID Card</label>
+                  {idCard && <Image width={200} height={200} src={idCard} alt="Picture" />}
+                </div>
+                <div className={styles.group}>
+                  <label htmlFor="address">Admission Letter</label>
+                  {admissionLetter && <Image width={200} height={200} src={admissionLetter} alt="Picture" />}
+                </div>
+                <div className={styles.group}>
+                  <label htmlFor="address">Referee Form</label>
+                  {referee && <Image width={200} height={200} src={referee} alt="Picture" />}
                 </div>
               </>
             ) : (
@@ -302,31 +331,29 @@ export const Single = ({ id }: { id: string }) => {
                 <h4>
                   The Status of your application is{" "}
                   <span>
-                    <select
-                      onChange={async (e) => {
-                        try {
-                          const newObj = { ...data, status: e.target.value };
-                          await saveFormProgress(id, newObj);
-
-                          toast.success("Application successfully! Kindly check back later");
-                        } catch (error) {
-                          console.log(error);
-                          toast.error("Error saving form. Please try again.");
-                        }
-                      }}>
+                    <select onChange={(e) => setStatus(e.target.value)}>
                       <option value={status}>{status}</option>
                       <option value="Processing">Processing</option>
                       <option value="Approved">Approved</option>
                     </select>
                   </span>
                 </h4>
+                <button
+                  onClick={async () => {
+                    try {
+                      const newObj = { ...data, status };
+                      await saveFormProgress(id, newObj);
+
+                      toast.success("Application successfully! Kindly check back later");
+                    } catch (error) {
+                      console.log(error);
+                      toast.error("Error saving form. Please try again.");
+                    }
+                  }}>
+                  Save
+                </button>
               </>
             )}
-
-            <div className={styles.buttons}>
-              {active !== 1 && <h2 onClick={() => setActive(active - 1)}>Previous</h2>}
-              {active !== 6 && <h2 onClick={() => setActive(active + 1)}>Save & Continue</h2>}
-            </div>
           </div>
         </div>
       </div>

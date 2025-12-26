@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { useEffect, useRef, useState } from "react";
@@ -11,6 +13,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Loader from "../loader";
 
 type FormDetails = {
   fname: string;
@@ -54,20 +57,42 @@ type FormDetails = {
   document: FileList;
 };
 
+type UploadState = {
+  picture?: File;
+  document?: File;
+  admissionLetter?: File;
+  idCard?: File;
+  referee?: File;
+};
+
 export const ApplyBody = () => {
   const formRef = useRef<HTMLDivElement>(null);
   const formRef2 = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(1);
   const [userId, setUserId] = useState("");
   const [status, setStatus] = useState("");
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+  const [sex, setSex] = useState("");
+  const [cgpa, setCgpa] = useState("");
+  const [matricNumber, setMatricNumber] = useState("");
+  const [department, setDepartment] = useState("");
+  const [uploads, setUploads] = useState<UploadState>({});
   const {
     register,
     handleSubmit,
     control,
     setValue,
+    getValues,
     formState: { errors },
-  } = useForm<FormDetails>();
-  const formValues = useWatch({ control });
+  } = useForm<FormDetails>({
+    shouldUnregister: false,
+  });
+  const watchedPreview = useWatch({
+    control,
+    name: ["fname", "lname", "sex", "cgpa", "matricNo", "course"],
+  });
   const router = useRouter();
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -75,11 +100,17 @@ export const ApplyBody = () => {
         setUserId(user.uid); // User is logged in, set userId
         const fetchData = async () => {
           const savedData = await loadFormProgress(user.uid);
-          if (savedData) {
-            Object.entries(savedData).forEach(([key, value]) => setValue(key as keyof FormDetails, value));
-            if (savedData.status) setStatus(savedData.status);
-          }
+          if (!savedData) return;
+
+          Object.entries(savedData).forEach(([key, value]) => {
+            if (!["picture", "document", "admissionLetter", "idCard", "referee"].includes(key)) {
+              setValue(key as keyof FormDetails, value);
+            }
+          });
+
+          if (savedData.status) setStatus(savedData.status);
         };
+
         fetchData();
       } else {
         toast.error("You have to be logged in to apply");
@@ -90,7 +121,7 @@ export const ApplyBody = () => {
     });
 
     return () => unsubscribe();
-  }, [router, setValue]);
+  }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const saveFormProgress = async (userId: string, data: any) => {
@@ -114,16 +145,29 @@ export const ApplyBody = () => {
     }
   };
 
-  useEffect(() => {
-    if (userId && Object.keys(formValues).length > 0) {
-      const timeout = setTimeout(() => {
-        saveFormProgress(userId, formValues);
-      }, 1000); // Save after 1s delay
+  // useEffect(() => {
+  //   if (userId && Object.keys(formValues).length > 0) {
+  //     const timeout = setTimeout(() => {
+  //       saveFormProgress(userId, formValues);
+  //     }, 1000); // Save after 1s delay
 
-      // Cleanup function to clear the timeout if formValues change again
-      return () => clearTimeout(timeout);
-    }
-  }, [formValues, userId]);
+  //     // Cleanup function to clear the timeout if formValues change again
+  //     return () => clearTimeout(timeout);
+  //   }
+  // }, [formValues, userId]);
+
+  useEffect(() => {
+    if (!watchedPreview) return;
+
+    const [fname, lname, sex, cgpa, matricNo, course] = watchedPreview;
+
+    setFname(fname || "");
+    setLname(lname || "");
+    setSex(sex || "");
+    setCgpa(cgpa || "");
+    setMatricNumber(matricNo || "");
+    setDepartment(course || "");
+  }, [watchedPreview]);
 
   const uploadAndAssign = async (fileList: FileList | undefined): Promise<string> => {
     if (!fileList || fileList.length === 0) return "";
@@ -135,7 +179,25 @@ export const ApplyBody = () => {
   };
 
   const submit: SubmitHandler<FormDetails> = async (e) => {
+    setLoading(true);
+
     try {
+      // 1️⃣ Validate required uploads
+      const requiredFiles: { key: keyof FormDetails; label: string }[] = [
+        { key: "picture", label: "Passport photograph" },
+        { key: "document", label: "Document" },
+        { key: "admissionLetter", label: "Admission letter" },
+        { key: "idCard", label: "ID card" },
+        { key: "referee", label: "Referee letter" },
+      ];
+
+      for (const file of requiredFiles) {
+        if (!e[file.key]) {
+          toast.error(`${file.label} is required`);
+        }
+      }
+
+      // 2️⃣ Upload files only after validation passes
       const [picture, document, admissionLetter, idCard, referee] = await Promise.all([
         uploadAndAssign(e.picture),
         uploadAndAssign(e.document),
@@ -144,6 +206,7 @@ export const ApplyBody = () => {
         uploadAndAssign(e.referee),
       ]);
 
+      // 3️⃣ Build payload
       const newObj = {
         ...e,
         picture,
@@ -156,10 +219,14 @@ export const ApplyBody = () => {
       };
 
       await saveFormProgress(userId, newObj);
-      toast.success("Application successful! Kindly check back later");
+
+      toast.success("Application Successful! Kindly check back later");
     } catch (error) {
       console.error(error);
+
       toast.error("Error saving form. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -208,6 +275,15 @@ export const ApplyBody = () => {
     } catch (err) {
       console.error("Upload failed:", err);
       return null;
+    }
+  };
+
+  const next = () => {
+    const values = getValues();
+    const { picture, admissionLetter, idCard, document, referee, ...payload } = values;
+    if (userId) {
+      saveFormProgress(userId, payload);
+      setActive(active + 1);
     }
   };
 
@@ -271,7 +347,7 @@ export const ApplyBody = () => {
                 </div>
               </>
             ) : active === 3 ? (
-              <>
+              <div key="step-3">
                 <div className={styles.double}>
                   <div className={styles.group}>
                     <label htmlFor="fname">First Name</label>
@@ -362,13 +438,32 @@ export const ApplyBody = () => {
                   {errors.degree && <span className="error">{errors.degree.message}</span>}
                 </div>
                 <div className={styles.group}>
-                  <label htmlFor="address">Picture</label>
-                  <input type="file" placeholder="Enter your Picture" {...register("picture", { required: "Picture is required" })} />
+                  <label htmlFor="picture">Picture</label>
+                  {uploads.picture ? (
+                    <Image src={URL.createObjectURL(uploads.picture)} width={100} height={100} alt="Preview" className="h-24 w-24 rounded" />
+                  ) : (
+                    <input
+                      type="file"
+                      placeholder="Enter your Picture"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        setUploads((prev) => ({
+                          ...prev,
+                          picture: file,
+                        }));
+
+                        setValue("picture", e.target.files as FileList, { shouldValidate: true });
+                      }}
+                    />
+                  )}
                   {errors.picture && <span className="error">{errors.picture.message}</span>}
                 </div>
-              </>
+              </div>
             ) : active === 4 ? (
-              <>
+              <div key="step-4">
                 <div className={styles.group}>
                   <label htmlFor="fatherFullName">Father&apos;s Full Name</label>
                   <input type="text" placeholder="Enter your Father's Full Name" {...register("fatherFullName", { required: "Father's Full Name is required" })} />
@@ -399,10 +494,10 @@ export const ApplyBody = () => {
                   <input type="text" placeholder="Enter  Field" {...register("fatherAlive", { required: "Field is required" })} />
                   {errors.fatherAlive && <span className="error">{errors.fatherAlive.message}</span>}
                 </div>
-              </>
+              </div>
             ) : active === 5 ? (
               <>
-                <div className={styles.department}>
+                <div className={styles.department} key="step-5">
                   <div className={styles.group}>
                     <label htmlFor="long">How long has the applicant been in your department</label>
                     <input type="text" placeholder="Enter field" {...register("long", { required: "Field is required" })} />
@@ -440,7 +535,7 @@ export const ApplyBody = () => {
               </>
             ) : active === 6 ? (
               <>
-                <div className={styles.department}>
+                <div className={styles.department} key="step-6">
                   <h2>Referee One</h2>
                   <div className={styles.group}>
                     <label htmlFor="refereeName1">Name</label>
@@ -490,69 +585,151 @@ export const ApplyBody = () => {
                 <p>Note: You would have to upload a fully signed and stamped form at the last step to be able to apply</p>
               </>
             ) : active === 7 ? (
-              <>
+              <div key="step-7">
                 <div className={styles.group}>
                   <label htmlFor="address">Dean/HOD Attestation form</label>
-                  <input type="file" placeholder="Enter your Picture" {...register("document", { required: "Attestation Form is required" })} />
+                  {uploads.document ? (
+                    <Image src={URL.createObjectURL(uploads.document)} width={100} height={100} alt="Preview" className="h-24 w-24 rounded" />
+                  ) : (
+                    <input
+                      type="file"
+                      placeholder="Enter your Picture"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        setUploads((prev) => ({
+                          ...prev,
+                          document: file,
+                        }));
+
+                        setValue("document", e.target.files as FileList, { shouldValidate: true });
+                      }}
+                    />
+                  )}
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="address">ID Card</label>
-                  <input type="file" placeholder="Enter your Picture" {...register("idCard", { required: "ID Card is required" })} />
+                  {uploads.idCard ? (
+                    <Image src={URL.createObjectURL(uploads.idCard)} width={100} height={100} alt="Preview" className="h-24 w-24 rounded" />
+                  ) : (
+                    <input
+                      type="file"
+                      placeholder="Enter your Picture"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        setUploads((prev) => ({
+                          ...prev,
+                          idCard: file,
+                        }));
+
+                        setValue("idCard", e.target.files as FileList, { shouldValidate: true });
+                      }}
+                    />
+                  )}
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="address">Admission Letter</label>
-                  <input type="file" placeholder="Enter your Picture" {...register("admissionLetter", { required: "Admission Letter is required" })} />
+                  {uploads.admissionLetter ? (
+                    <Image src={URL.createObjectURL(uploads.admissionLetter)} width={100} height={100} alt="Preview" className="h-24 w-24 rounded" />
+                  ) : (
+                    <input
+                      type="file"
+                      placeholder="Enter your Picture"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        setUploads((prev) => ({
+                          ...prev,
+                          admissionLetter: file,
+                        }));
+
+                        setValue("admissionLetter", e.target.files as FileList, { shouldValidate: true });
+                      }}
+                    />
+                  )}
                 </div>
                 <div className={styles.group}>
                   <label htmlFor="address">Referee Form</label>
-                  <input type="file" placeholder="Enter your Picture" {...register("referee", { required: "Referee Form is required" })} />
+                  {uploads.referee ? (
+                    <Image src={URL.createObjectURL(uploads.referee)} width={100} height={100} alt="Preview" className="h-24 w-24 rounded" />
+                  ) : (
+                    <input
+                      type="file"
+                      placeholder="Enter your Picture"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        setUploads((prev) => ({
+                          ...prev,
+                          referee: file,
+                        }));
+
+                        setValue("referee", e.target.files as FileList, { shouldValidate: true });
+                      }}
+                    />
+                  )}
                 </div>
-              </>
+              </div>
             ) : (
               <>
                 <h4>The Status of your application is {status}</h4>
               </>
             )}
             {active === 7 ? (
-              <button>Submit</button>
+              loading ? (
+                <Loader />
+              ) : (
+                <button type="submit">Submit</button>
+              )
             ) : active === 8 ? null : (
               <div className={styles.buttons}>
                 {active !== 1 && <h2 onClick={() => setActive(active - 1)}>Previous</h2>}
-                <h2 onClick={() => setActive(active + 1)}>{active === 1 || active === 2 ? "Next" : "Save & Continue"} </h2>
+                <h2 onClick={next}>{active === 1 || active === 2 ? "Next" : "Save & Continue"} </h2>
               </div>
             )}
           </div>
         </div>
       </div>
       <div className={`${styles.downloadable} hiddenForPDF`} ref={formRef}>
-        <h2>Joseph Adaramola Education Foundation(JAEF)</h2>
+        <div className={styles.downloadHeader}>
+          <h2>Joseph Adaramola Education Foundation(JAEF)</h2>
+        </div>
         <h3>Attestation by Applicant's Dean / HOD</h3>
         <div className={styles.department}>
           <div className={styles.double}>
             <div className={styles.group}>
               <label htmlFor="long">First Name</label>
-              <input type="text" placeholder="" {...register("fname")} />
+              <input type="text" placeholder="" readOnly value={fname} />
             </div>
             <div className={styles.group}>
               <label htmlFor="long">Last Name</label>
-              <input type="text" placeholder="" {...register("lname")} />
+              <input type="text" placeholder="" readOnly value={lname} />
             </div>
           </div>
           <div className={styles.group}>
             <label htmlFor="long">Gender</label>
-            <input type="text" placeholder="" {...register("sex")} />
+            <input type="text" placeholder="" readOnly value={sex} />
           </div>
           <div className={styles.group}>
             <label htmlFor="long">Department</label>
-            <input type="text" placeholder="" {...register("course")} />
+            <input type="text" placeholder="" readOnly value={department} />
           </div>
           <div className={styles.group}>
             <label htmlFor="long">Matric No.</label>
-            <input type="text" placeholder="" {...register("matricNo")} />
+            <input type="text" placeholder="" readOnly value={matricNumber} />
           </div>
           <div className={styles.group}>
             <label htmlFor="long">Level/CGPA</label>
-            <input type="text" placeholder="" {...register("cgpa")} />
+            <input type="text" placeholder="" readOnly value={cgpa} />
           </div>
           <div className={styles.group}>
             <label htmlFor="long">How long has the applicant been in your department</label>

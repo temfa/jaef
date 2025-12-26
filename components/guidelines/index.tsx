@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import React from "react";
 import styles from "./styles.module.css";
 import Image from "next/image";
@@ -53,7 +52,7 @@ export const Guidelines = () => {
               <p>Year</p>
               <p>Edition</p>
               <p>Beneficiary Count</p>
-              <p>Amount Disbursed(#)</p>
+              <p>Amount Disbursed(₦)</p>
             </div>
             <div className={styles.single}>
               <p>2016</p>
