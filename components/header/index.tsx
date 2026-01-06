@@ -30,6 +30,7 @@ export const Header = () => {
         <Link href="/">Home</Link>
         <Link href="/about">About</Link>
         <Link href="/how">How it works</Link>
+        <Link href="/events">Events</Link>
         {active ? (
           <button>
             <Link href="/apply">Apply</Link>
