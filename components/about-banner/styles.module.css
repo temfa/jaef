@@ -3,12 +3,8 @@
     display: flex;
     /* justify-content: center; */
     align-items: center;
-    height: 440px;
     flex-direction: column;
     gap: 141px;
-    background-image: url("../../public/images/gradient.png");
-    background-size: cover;
-    background-position: center;
 }
 
 .container>h2 {

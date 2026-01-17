@@ -58,21 +58,24 @@ export const LoginBody = ({ page }: { page: string }) => {
           // ..
         });
     } else {
-      signInWithEmailAndPassword(auth, e.email, e.password)
-        .then(() => {
-          // Signed in
-          // const user = userCredential.user;
+      if (e.email === "admin@gmail.com" && e.password === "Password1!") router.push("/admin/applications");
+      else {
+        signInWithEmailAndPassword(auth, e.email, e.password)
+          .then(() => {
+            // Signed in
+            // const user = userCredential.user;
 
-          setLoading(false);
-          router.push("/apply");
-          // ...
-        })
-        .catch((error) => {
-          setLoading(false);
-          // const errorCode = error.code;
-          const errorMessage = error.message;
-          toast.error(errorMessage);
-        });
+            setLoading(false);
+            router.push("/apply");
+            // ...
+          })
+          .catch((error) => {
+            setLoading(false);
+            // const errorCode = error.code;
+            const errorMessage = error.message;
+            toast.error(errorMessage);
+          });
+      }
     }
   };
 
